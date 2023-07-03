@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { Stage, Layer, Rect, Text, Line, Shape, Image} from "react-konva";
 import Table from "./components/table";
 import download from 'downloadjs';
-import { toSvg } from 'html-to-image';
 
 
 function App() {
@@ -29,12 +28,13 @@ function App() {
     const stageRef = useRef(null);
 
     const saveAsSVG = () => {
-        const blob = new Blob([stageRef], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
+        const dataURL = stageRef.current.toDataURL({ pixelRatio: 1, mimeType: "image/svg+xml" });
         const link = document.createElement("a");
-        link.download = "icon.svg";
-        link.href = url;
+        link.download = "stage.svg";
+        link.href = dataURL;
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
     };
 
     const saveAsJPG = () => {

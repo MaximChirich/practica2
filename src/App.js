@@ -11,6 +11,7 @@ function App() {
     const violet = 'rgb(139, 0, 155)'
     const blue = 'rgb(0, 0, 255)'
     const green = 'rgb(0, 255, 0)'
+    const white = 'rgb(255,255,255)'
 
     const [image, setImage] = useState(null);
 
@@ -28,13 +29,7 @@ function App() {
     const stageRef = useRef(null);
 
     const saveAsSVG = () => {
-        const dataURL = stageRef.current.toDataURL({ pixelRatio: 1, mimeType: "image/svg+xml" });
-        const link = document.createElement("a");
-        link.download = "stage.svg";
-        link.href = dataURL;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+
     };
 
     const saveAsJPG = () => {
@@ -50,6 +45,15 @@ function App() {
     return (
         <div className="App">
             <Stage width={1600} height={2000} ref={stageRef}>
+                <Layer>
+                    <Rect
+                        x={0}
+                        y={0}
+                        width={1600}
+                        height={2000}
+                        fill={white}
+                    />
+                </Layer>
                 <Layer>
                     <Text text="Заголовок" fontSize={26} />
                     <Text text="Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст " fontSize={18} x={20} y={50} />
@@ -133,13 +137,11 @@ function App() {
                 </Layer>
             </Stage>
             <div>
-                {typeof window !== 'undefined' && (
-                    <>
-                        <button onClick={saveAsSVG} style={{ margin: 10 }} >Сохранить как SVG</button>
-                        <button onClick={saveAsJPG} style={{ margin: 10 }}>Сохранить как JPG</button>
-                        <button onClick={saveAsPNG} style={{ margin: 10 }}>Сохранить как PNG</button>
-                    </>
-                )}
+                <>
+                    <button onClick={saveAsSVG} style={{ margin: 10 }} >Сохранить как SVG</button>
+                    <button onClick={saveAsJPG} style={{ margin: 10 }}>Сохранить как JPG</button>
+                    <button onClick={saveAsPNG} style={{ margin: 10 }}>Сохранить как PNG</button>
+                </>
             </div>
         </div>
     );

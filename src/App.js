@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Stage, Layer, Rect, Text, Line, Shape, Image} from "react-konva";
+import { Stage, Layer, Rect, Text, Line, Shape, Image, Konva} from "react-konva";
 import Table from "./components/table";
 import download from 'downloadjs';
+import html2canvas from 'html2canvas';
 
 
 function App() {
@@ -29,7 +30,20 @@ function App() {
     const stageRef = useRef(null);
 
     const saveAsSVG = () => {
+        const stageContainer = stageRef.current.container();
 
+        html2canvas(stageContainer)
+            .then((canvas) => {
+                const dataUrl = canvas.toDataURL('image/svg+xml');
+
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = 'drawing.svg';
+                link.click();
+            })
+            .catch((error) => {
+                console.error('Error saving as SVG:', error);
+            });
     };
 
     const saveAsJPG = () => {
@@ -137,11 +151,9 @@ function App() {
                 </Layer>
             </Stage>
             <div>
-                <>
-                    <button onClick={saveAsSVG} style={{ margin: 10 }} >Сохранить как SVG</button>
+                    <button onClick={saveAsSVG} style={{ margin: 10 }}>Сохранить как SVG</button>
                     <button onClick={saveAsJPG} style={{ margin: 10 }}>Сохранить как JPG</button>
                     <button onClick={saveAsPNG} style={{ margin: 10 }}>Сохранить как PNG</button>
-                </>
             </div>
         </div>
     );

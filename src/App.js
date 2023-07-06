@@ -86,8 +86,8 @@ function App() {
                             context.closePath();
                             context.fillStrokeShape(shape);
                         }}
-                        fill="orange"
-                        stroke="black"
+                        fill={orange}
+                        stroke={black}
                         strokeWidth={1}
                         draggable
                         onClick={handleShapeClick}
@@ -98,8 +98,8 @@ function App() {
                         y={400}
                         points={[0, 200, 200, 200, 100, 0]}
                         closed
-                        stroke="black"
-                        fill="violet"
+                        stroke={black}
+                        fill={violet}
                         draggable
                         onClick={handleShapeClick}
                     />
@@ -109,8 +109,8 @@ function App() {
                         y={400}
                         points={[0, 300, 200, 300, 100, 0]}
                         closed
-                        stroke="black"
-                        fill="yellow"
+                        stroke={black}
+                        fill={yellow}
                         draggable
                         onClick={handleShapeClick}
                     />
@@ -120,7 +120,7 @@ function App() {
                         y={700}
                         width={200}
                         height={200}
-                        fill="blue"
+                        fill={blue}
                         draggable
                         onClick={handleShapeClick}
                     />
@@ -130,7 +130,7 @@ function App() {
                         y={750}
                         width={400}
                         height={200}
-                        fill="green"
+                        fill={green}
                         draggable
                         onClick={handleShapeClick}
                     />
@@ -138,17 +138,8 @@ function App() {
                     {selectedShape && (
                         <Transformer
                             nodes={[selectedShape]}
-                            boundBoxFunc={(oldBox, newBox) => {
-                                if (newBox.width < 10 || newBox.height < 10) {
-                                    return oldBox;
-                                }
-                                return newBox;
-                            }}
-                            enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
-                            rotateEnabled={false}
-                            keepRatio={false}
-                            anchorCornerRadius={6}
                             borderStrokeWidth={1}
+
                             onTransformEnd={(e) => {
                                 const node = selectedShape;
                                 const scaleX = node.scaleX();
@@ -156,8 +147,8 @@ function App() {
                                 const width = node.width();
                                 const height = node.height();
 
-                                node.scaleX(1);
-                                node.scaleY(1);
+                               /* node.scaleX(1);
+                                node.scaleY(1);*/
                                 node.width(width * scaleX);
                                 node.height(height * scaleY);
                             }}
@@ -192,4 +183,3 @@ function App() {
 }
 
 export default App;
-

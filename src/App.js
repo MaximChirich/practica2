@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Stage, Layer, Rect, Text, Line, Shape, Image} from "react-konva";
+import { Stage, Layer, Rect, Text, Line, Shape, Image, Transformer} from "react-konva";
 import Table from "./components/table";
 import download from 'downloadjs';
 
-
-
 function App() {
+    // цвета
     const orange = 'rgb(255, 102, 0)'
     const black = 'rgb(0,0,0)'
     const yellow = 'rgb(255,255,0)'
@@ -14,6 +13,7 @@ function App() {
     const green = 'rgb(0, 255, 0)'
     const white = 'rgb(255,255,255)'
 
+    // Загрузка изображения
     const [image, setImage] = useState(null);
 
     useEffect(() => {
@@ -27,6 +27,7 @@ function App() {
         loadImage();
     }, []);
 
+    // Сохранение полотна в разных форматах
     const stageRef = useRef(null);
 
     const saveAsSVG = () => {
@@ -47,6 +48,14 @@ function App() {
         download(dataUrl, "drawing.png", "image/png");
     };
 
+    // Функция для обработки выбора формы
+    const [selectedShape, setSelectedShape] = useState(null);
+    let transformerRef = useRef(null);
+
+    const handleShapeClick = (e) => {
+        setSelectedShape(e.target);
+    };
+
     return (
         <div className="App">
             <Stage width={1600} height={2000} ref={stageRef}>
@@ -59,10 +68,13 @@ function App() {
                         fill={white}
                     />
                 </Layer>
+
                 <Layer>
                     <Text text="Заголовок" fontSize={26} />
                     <Text text="Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст Текст " fontSize={18} x={20} y={50} />
+                </Layer>
 
+                <Layer>
                     <Shape
                         x={10}
                         y={80}
@@ -72,13 +84,13 @@ function App() {
                             context.lineTo(220, 250);
                             context.quadraticCurveTo(50, 10, 260, 170);
                             context.closePath();
-
                             context.fillStrokeShape(shape);
                         }}
-
-                        fill={orange}
-                        stroke={black}
+                        fill="orange"
+                        stroke="black"
                         strokeWidth={1}
+                        draggable
+                        onClick={handleShapeClick}
                     />
 
                     <Line
@@ -86,8 +98,10 @@ function App() {
                         y={400}
                         points={[0, 200, 200, 200, 100, 0]}
                         closed
-                        stroke={black}
-                        fill={violet}
+                        stroke="black"
+                        fill="violet"
+                        draggable
+                        onClick={handleShapeClick}
                     />
 
                     <Line
@@ -95,8 +109,10 @@ function App() {
                         y={400}
                         points={[0, 300, 200, 300, 100, 0]}
                         closed
-                        stroke={black}
-                        fill={yellow}
+                        stroke="black"
+                        fill="yellow"
+                        draggable
+                        onClick={handleShapeClick}
                     />
 
                     <Rect
@@ -104,7 +120,9 @@ function App() {
                         y={700}
                         width={200}
                         height={200}
-                        fill={blue}
+                        fill="blue"
+                        draggable
+                        onClick={handleShapeClick}
                     />
 
                     <Rect
@@ -112,19 +130,42 @@ function App() {
                         y={750}
                         width={400}
                         height={200}
-                        fill={green}
+                        fill="green"
+                        draggable
+                        onClick={handleShapeClick}
                     />
 
-                    <Line
+                    {selectedShape && (
+                        <Transformer
+                            nodes={[selectedShape]}
+                            boundBoxFunc={(oldBox, newBox) => {
+                                if (newBox.width < 10 || newBox.height < 10) {
+                                    return oldBox;
+                                }
+                                return newBox;
+                            }}
+                            enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
+                            rotateEnabled={false}
+                            keepRatio={false}
+                            anchorCornerRadius={6}
+                            borderStrokeWidth={1}
+                            onTransformEnd={(e) => {
+                                const node = selectedShape;
+                                const scaleX = node.scaleX();
+                                const scaleY = node.scaleY();
+                                const width = node.width();
+                                const height = node.height();
 
-                        x={400}
-                        y={400}
-                        points={[0, 300, 200, 300, 100, 0]}
-                        closed
-                        stroke={black}
-                        fill={orange}
-                    />
+                                node.scaleX(1);
+                                node.scaleY(1);
+                                node.width(width * scaleX);
+                                node.height(height * scaleY);
+                            }}
+                        />
+                    )}
+                </Layer>
 
+                <Layer>
                     <Table
                         rows={5}
                         columns={5}
@@ -142,12 +183,13 @@ function App() {
                 </Layer>
             </Stage>
             <div>
-                    <button onClick={saveAsSVG} style={{ margin: 10 }}>Сохранить как SVG</button>
-                    <button onClick={saveAsJPG} style={{ margin: 10 }}>Сохранить как JPG</button>
-                    <button onClick={saveAsPNG} style={{ margin: 10 }}>Сохранить как PNG</button>
+                <button onClick={saveAsSVG} style={{ margin: 10 }}>Сохранить как SVG</button>
+                <button onClick={saveAsJPG} style={{ margin: 10 }}>Сохранить как JPG</button>
+                <button onClick={saveAsPNG} style={{ margin: 10 }}>Сохранить как PNG</button>
             </div>
         </div>
     );
 }
 
 export default App;
+

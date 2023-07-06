@@ -49,11 +49,17 @@ function App() {
     };
 
     // Функция для обработки выбора формы
-    const [selectedShape, setSelectedShape] = useState(null);
     let transformerRef = useRef(null);
 
+    const [selectedShape, setSelectedShape] = useState(null);
     const handleShapeClick = (e) => {
         setSelectedShape(e.target);
+    };
+
+
+    const [selectedLine, setSelectedLine] = useState(null);
+    const handleLineClick = (e) => {
+        setSelectedLine(e.target);
     };
 
     return (
@@ -101,7 +107,7 @@ function App() {
                         stroke={black}
                         fill={violet}
                         draggable
-                        onClick={handleShapeClick}
+                        onClick={handleLineClick}
                     />
 
                     <Line
@@ -112,7 +118,7 @@ function App() {
                         stroke={black}
                         fill={yellow}
                         draggable
-                        onClick={handleShapeClick}
+                        onClick={handleLineClick}
                     />
 
                     <Rect
@@ -147,8 +153,26 @@ function App() {
                                 const width = node.width();
                                 const height = node.height();
 
-                               /* node.scaleX(1);
-                                node.scaleY(1);*/
+                                node.scaleX(1);
+                                node.scaleY(1);
+                                node.width(width * scaleX);
+                                node.height(height * scaleY);
+                            }}
+                        />
+                    )}
+
+                    {selectedLine && (
+                        <Transformer
+                            nodes={[selectedLine]}
+                            borderStrokeWidth={1}
+
+                            onTransformEnd={(e) => {
+                                const node = selectedLine;
+                                const scaleX = node.scaleX();
+                                const scaleY = node.scaleY();
+                                const width = node.width();
+                                const height = node.height();
+
                                 node.width(width * scaleX);
                                 node.height(height * scaleY);
                             }}
